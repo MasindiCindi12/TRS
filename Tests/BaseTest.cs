@@ -9,6 +9,9 @@ namespace TRS.Web.Automation.Tests
     [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
     public abstract class BaseTest
     {
+        protected const string PreConditionBanner =
+            "====================================Pre-Condition====================================";
+
         protected IWebDriver Driver { get; private set; } = null!;
         protected ExtentTest ExtentTest { get; private set; } = null!;
         protected ScreenRecorder Recorder { get; private set; } = null!;

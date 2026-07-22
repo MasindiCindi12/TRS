@@ -8,9 +8,6 @@ namespace TRS.Web.Automation.Tests
     [TestFixture]
     public class LoginTests : BaseTest
     {
-        private const string PreConditionBanner =
-            "====================================Pre-Condition====================================";
-
         private LoginPage _loginPage = null!;
         private AppSettings _settings = null!;
 
