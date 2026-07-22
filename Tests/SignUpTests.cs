@@ -24,7 +24,8 @@ namespace TRS.Web.Automation.Tests
         [Test]
         public void SignUp_WithUniqueRandomEmail_RedirectsToSignIn()
         {
-            var uniqueEmail = $"trs.test.{Guid.NewGuid():N}@example.com";
+            var sixDigitSuffix = Math.Abs(Guid.NewGuid().GetHashCode() % 1_000_000).ToString("D6");
+            var uniqueEmail = $"trs.test.{sixDigitSuffix}@example.com";
             ExtentTest.Info($"Generated unique sign-up email: {uniqueEmail}");
 
             var result = _signUpPage.SubmitSignUp(
