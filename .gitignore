@@ -10,6 +10,7 @@ obj/
 
 ## Test results
 TestResults/
+Reports/
 
 ## Local secrets (test credentials) - never commit
 Configuration/appsettings.local.json

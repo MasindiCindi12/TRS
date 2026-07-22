@@ -5,10 +5,10 @@ namespace TRS.Web.Automation.Utilities
 {
     internal static class WaitHelper
     {
-        public static void WaitUntilUrlChangesFrom(IWebDriver driver, string originalUrl, TimeSpan timeout)
+        public static void WaitUntilUrlContains(IWebDriver driver, string substring, TimeSpan timeout)
         {
             var wait = new WebDriverWait(driver, timeout);
-            wait.Until(d => d.Url != originalUrl);
+            wait.Until(d => d.Url.Contains(substring, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

@@ -4,6 +4,7 @@ namespace TRS.Web.Automation.Models
     {
         public string BaseUrl { get; set; } = string.Empty;
         public string LoginPath { get; set; } = string.Empty;
+        public string DashboardPath { get; set; } = string.Empty;
         public string LoginEmail { get; set; } = string.Empty;
         public string LoginPassword { get; set; } = string.Empty;
     }
