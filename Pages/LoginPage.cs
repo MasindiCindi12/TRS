@@ -6,7 +6,7 @@ namespace TRS.Web.Automation.Pages
     {
         private static readonly By EmailInput = By.Name("email");
         private static readonly By PasswordInput = By.Name("password");
-        private static readonly By SubmitButton = By.CssSelector("button[type='submit']");
+        private static readonly By SubmitButton = By.CssSelector("[data-cy='login-submit']");
 
         public LoginPage(IWebDriver driver) : base(driver)
         {
