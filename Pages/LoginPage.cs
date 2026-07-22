@@ -14,7 +14,7 @@ namespace TRS.Web.Automation.Pages
         private static readonly By PasswordInput = By.Name("password");
         private static readonly By SubmitButton = By.CssSelector("[data-cy='login-submit']");
 
-        public LoginPage(IWebDriver driver, ExtentTest test) : base(driver, test)
+        public LoginPage(IWebDriver driver, ExtentTest test, ScreenRecorder recorder) : base(driver, test, recorder)
         {
         }
 

@@ -18,7 +18,7 @@ namespace TRS.Web.Automation.Tests
         public void SetUpLoginPage()
         {
             _settings = AppSettingsProvider.Current;
-            _loginPage = new LoginPage(Driver, ExtentTest);
+            _loginPage = new LoginPage(Driver, ExtentTest, Recorder);
 
             ExtentTest.Info(PreConditionBanner);
             _loginPage.NavigateTo(_settings.BaseUrl, _settings.LoginPath);

@@ -9,15 +9,17 @@ namespace TRS.Web.Automation.Utilities
 
         public static ExtentReports Instance => LazyExtent.Value;
 
+        public static string ReportsDirectory { get; } = Path.Combine(
+            Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..")),
+            "Reports");
+
         public static void Flush() => LazyExtent.Value.Flush();
 
         private static ExtentReports Create()
         {
-            var projectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", ".."));
-            var reportsDir = Path.Combine(projectRoot, "Reports");
-            Directory.CreateDirectory(reportsDir);
+            Directory.CreateDirectory(ReportsDirectory);
 
-            var reportPath = Path.Combine(reportsDir, $"TestReport_{DateTime.Now:yyyyMMdd_HHmmss}.html");
+            var reportPath = Path.Combine(ReportsDirectory, $"TestReport_{DateTime.Now:yyyyMMdd_HHmmss}.html");
             var htmlReporter = new ExtentSparkReporter(reportPath);
 
             var extent = new ExtentReports();

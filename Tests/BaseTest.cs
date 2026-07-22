@@ -6,10 +6,12 @@ using TRS.Web.Automation.Utilities;
 
 namespace TRS.Web.Automation.Tests
 {
+    [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
     public abstract class BaseTest
     {
         protected IWebDriver Driver { get; private set; } = null!;
         protected ExtentTest ExtentTest { get; private set; } = null!;
+        protected ScreenRecorder Recorder { get; private set; } = null!;
 
         [SetUp]
         public void SetUpDriver()
@@ -17,14 +19,37 @@ namespace TRS.Web.Automation.Tests
             Driver = new ChromeDriver();
             Driver.Manage().Window.Maximize();
             ExtentTest = ExtentReportManager.Instance.CreateTest(TestContext.CurrentContext.Test.Name);
+            Recorder = new ScreenRecorder(Driver);
         }
 
         [TearDown]
-        public void TearDownDriver()
+        public async Task TearDownDriver()
         {
-            LogResultToExtent();
-            Driver.Quit();
-            Driver.Dispose();
+            try
+            {
+                await SaveRecordingToExtent();
+                LogResultToExtent();
+            }
+            finally
+            {
+                Driver.Quit();
+                Driver.Dispose();
+                ExtentReportManager.Flush();
+            }
+        }
+
+        private async Task SaveRecordingToExtent()
+        {
+            var fileNameSafeTestName = string.Join("_", TestContext.CurrentContext.Test.Name.Split(Path.GetInvalidFileNameChars()));
+            var fileName = $"{fileNameSafeTestName}_{DateTime.UtcNow:yyyyMMddHHmmssfff}.gif";
+            var outputPath = Path.Combine(ExtentReportManager.ReportsDirectory, "Recordings", fileName);
+
+            var savedPath = await Recorder.SaveAsync(outputPath);
+            if (savedPath is not null)
+            {
+                ExtentTest.Info("Screen recording:");
+                ExtentTest.AddScreenCaptureFromPath($"Recordings/{fileName}");
+            }
         }
 
         private void LogResultToExtent()
