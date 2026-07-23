@@ -63,8 +63,21 @@ namespace TRS.Web.Automation.Tests
 
         [Test]
         [Category("Login Tests")]
-        public void Logout_WhenClicked_ShouldReturnToSignIn()
+        public async Task Logout_WhenClicked_ShouldReturnToSignIn()
         {
+            Assert.That(_settings.LoginEmail, Is.Not.Empty,
+                "Set LoginEmail in Configuration/appsettings.local.json before running this test.");
+            Assert.That(_settings.LoginPassword, Is.Not.Empty,
+                "Set LoginPassword in Configuration/appsettings.local.json before running this test.");
+
+            var loginResult = await _loginPage.SubmitLoginAsync(
+                _settings.LoginEmail,
+                _settings.LoginPassword,
+                _settings.DashboardPath,
+                responseTimeout: TimeSpan.FromSeconds(15),
+                redirectTimeout: TimeSpan.FromSeconds(20));
+            LoginAssertions.AssertLoginSucceeded(loginResult, _settings.DashboardPath);
+
             var result = _dashboardPage.SubmitLogOut(_settings.LoginPath, redirectTimeout: TimeSpan.FromSeconds(15));
 
             ExtentTest.Info("Expected: Logging out redirects back to the Sign In page.");
