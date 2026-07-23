@@ -22,6 +22,10 @@ namespace TRS.Web.Automation.Tests
             Driver = new ChromeDriver();
             Driver.Manage().Window.Maximize();
             ExtentTest = ExtentReportManager.Instance.CreateTest(TestContext.CurrentContext.Test.Name);
+            foreach (var category in TestContext.CurrentContext.Test.Properties["Category"])
+            {
+                ExtentTest.AssignCategory(category.ToString());
+            }
             Recorder = new ScreenRecorder(Driver);
         }
 
@@ -50,7 +54,6 @@ namespace TRS.Web.Automation.Tests
             var savedPath = await Recorder.SaveAsync(outputPath);
             if (savedPath is not null)
             {
-                ExtentTest.Info("Screen recording:");
                 ExtentTest.AddScreenCaptureFromPath($"Recordings/{fileName}");
             }
         }

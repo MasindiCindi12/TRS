@@ -11,7 +11,8 @@ namespace TRS.Web.Automation.Utilities
 
         public static string ReportsDirectory { get; } = Path.Combine(
             Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..")),
-            "Reports");
+            "Reports",
+            DateTime.Now.ToString("yyyy-MM-dd"));
 
         public static void Flush() => LazyExtent.Value.Flush();
 
