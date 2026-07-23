@@ -22,6 +22,8 @@ namespace TRS.Web.Automation.Utilities
 
             var reportPath = Path.Combine(ReportsDirectory, $"TestReport_{DateTime.Now:yyyyMMdd_HHmmss}.html");
             var htmlReporter = new ExtentSparkReporter(reportPath);
+            htmlReporter.Config.DocumentTitle = "TRS Web Automation Execution Report – Masindi Sekhwari";
+            htmlReporter.Config.ReportName = "TRS Web QA Assessment";
 
             var extent = new ExtentReports();
             extent.AttachReporter(htmlReporter);
