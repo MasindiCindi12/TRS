@@ -10,18 +10,22 @@ namespace TRS.Web.Automation.Tests
     {
         private LoginPage _loginPage = null!;
         private AppSettings _settings = null!;
+        private DashboardPage _dashboardPage = null!;
 
         [SetUp]
         public void SetUpLoginPage()
         {
             _settings = AppSettingsProvider.Current;
             _loginPage = new LoginPage(Driver, ExtentTest, Recorder);
+            _dashboardPage = new DashboardPage(Driver, ExtentTest, Recorder);
 
             ExtentTest.Info(PreConditionBanner);
             _loginPage.NavigateTo(_settings.BaseUrl, _settings.LoginPath);
+
         }
 
         [Test]
+        [Category("Login Tests")]
         public async Task Login_WithValidCredentials_ReachesDashboard()
         {
             Assert.That(_settings.LoginEmail, Is.Not.Empty,
@@ -41,6 +45,7 @@ namespace TRS.Web.Automation.Tests
         }
 
         [Test]
+        [Category("Login Tests")]
         public async Task Login_WithInvalidCredentials_ReturnsUnauthorized()
         {
             var result = await _loginPage.SubmitLoginAsync(
@@ -52,6 +57,16 @@ namespace TRS.Web.Automation.Tests
 
             ExtentTest.Info($"Network: {result.StatusCode?.ToString() ?? "no response captured"}");
             LoginAssertions.AssertLoginFailed(result, _settings.LoginPath);
+        }
+
+        [Test]
+        [Category("Login Tests")]
+        public void LogOut_FromDashboard_ReturnsToSignIn()
+        {
+            var result = _dashboardPage.SubmitLogOut(_settings.LoginPath, redirectTimeout: TimeSpan.FromSeconds(15));
+
+            ExtentTest.Info($"Final URL: {result.FinalUrl}");
+            LogoutAssertions.AssertLogoutSucceeded(result, _settings.LoginPath);
         }
     }
 }

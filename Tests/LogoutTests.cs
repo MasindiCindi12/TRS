@@ -22,7 +22,7 @@ namespace TRS.Web.Automation.Tests
                 "Set LoginPassword in Configuration/appsettings.local.json before running this test.");
 
             var loginPage = new LoginPage(Driver, ExtentTest, Recorder);
-            _dashboardPage = new DashboardPage(Driver, ExtentTest, Recorder);
+           
 
             ExtentTest.Info(PreConditionBanner);
             loginPage.NavigateTo(_settings.BaseUrl, _settings.LoginPath);
@@ -37,13 +37,6 @@ namespace TRS.Web.Automation.Tests
             LoginAssertions.AssertLoginSucceeded(loginResult, _settings.DashboardPath);
         }
 
-        [Test]
-        public void LogOut_FromDashboard_ReturnsToSignIn()
-        {
-            var result = _dashboardPage.SubmitLogOut(_settings.LoginPath, redirectTimeout: TimeSpan.FromSeconds(15));
-
-            ExtentTest.Info($"Final URL: {result.FinalUrl}");
-            LogoutAssertions.AssertLogoutSucceeded(result, _settings.LoginPath);
-        }
+       
     }
 }

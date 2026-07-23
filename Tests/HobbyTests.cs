@@ -46,6 +46,7 @@ namespace TRS.Web.Automation.Tests
         }
 
         [Test]
+        [Category("Hobby Tab")]
         public void AddHobby_WithUniqueName_AppearsInList()
         {
             var hobbyName = UniqueHobbyName("Automation Hobby");
@@ -57,6 +58,7 @@ namespace TRS.Web.Automation.Tests
         }
 
         [Test]
+        [Category("Hobby Tab")]
         public void EditHobby_AfterAdding_UpdatesNameAndType()
         {
             var originalName = UniqueHobbyName("Automation Hobby");
@@ -71,6 +73,7 @@ namespace TRS.Web.Automation.Tests
         }
 
         [Test]
+        [Category("Hobby Tab")]
         public void DeleteHobby_AfterAdding_RemovesHobbyFromList()
         {
             var hobbyName = UniqueHobbyName("Automation Hobby");
