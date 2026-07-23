@@ -43,7 +43,7 @@ namespace TRS.Web.Automation.Tests
         {
             var email = TestDataFactory.UniqueEmail("person");
 
-            var result = _peoplePage.SubmitAddPerson("Automation", "Person", email, TestDataFactory.DefaultPassword);
+            var result = _peoplePage.SubmitAddPerson(TestDataFactory.Names.PersonFirstName, TestDataFactory.Names.PersonLastName, email, TestDataFactory.DefaultPassword);
 
             ExtentTest.Info($"Expected: '{email}' should appear in the People list after adding them.");
             ExtentTest.Info($"Actual: Added person: {result.Email}, listed: {result.IsListed}.");
@@ -55,7 +55,7 @@ namespace TRS.Web.Automation.Tests
         public void EditPerson_WhenClicked_ShouldDisplayEditDialog()
         {
             var email = TestDataFactory.UniqueEmail("person");
-            _peoplePage.SubmitAddPerson("Automation", "Person", email, TestDataFactory.DefaultPassword);
+            _peoplePage.SubmitAddPerson(TestDataFactory.Names.PersonFirstName, TestDataFactory.Names.PersonLastName, email, TestDataFactory.DefaultPassword);
 
             var result = _peoplePage.SubmitEditPerson(email);
 
@@ -69,7 +69,7 @@ namespace TRS.Web.Automation.Tests
         public void DeletePerson_WhenConfirmed_ShouldNotAppearAfterRefresh()
         {
             var email = TestDataFactory.UniqueEmail("person");
-            var addResult = _peoplePage.SubmitAddPerson("Automation", "Person", email, TestDataFactory.DefaultPassword);
+            var addResult = _peoplePage.SubmitAddPerson(TestDataFactory.Names.PersonFirstName, TestDataFactory.Names.PersonLastName, email, TestDataFactory.DefaultPassword);
 
             ExtentTest.Info($"Expected: '{email}' should appear in the People list after adding them (precondition for delete).");
             ExtentTest.Info($"Actual: Added person: {addResult.Email}, listed: {addResult.IsListed}.");

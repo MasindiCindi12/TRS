@@ -12,6 +12,29 @@ namespace TRS.Web.Automation.TestData
             public const string Music = "Music";
         }
 
+        public static class HobbyNames
+        {
+            public const string Default = "Automation Hobby";
+            public const string DefaultEdited = "Automation Hobby Edited";
+            public const string EndToEndOwn = "E2E Own Hobby";
+            public const string EndToEndLinked = "E2E Linked Hobby";
+        }
+
+        public static class Names
+        {
+            public const string PersonFirstName = "Automation";
+            public const string PersonLastName = "Person";
+
+            public const string LinkedPersonFirstName = "Automation";
+            public const string LinkedPersonLastName = "Linked";
+
+            public const string SignUpFirstName = "Trs";
+            public const string SignUpLastName = "Tester";
+
+            public const string EndToEndFirstName = "Trs";
+            public const string EndToEndLastName = "E2E";
+        }
+
         public static string UniqueEmail(string label)
         {
             var sixDigitSuffix = Math.Abs(Guid.NewGuid().GetHashCode() % 1_000_000).ToString("D6");

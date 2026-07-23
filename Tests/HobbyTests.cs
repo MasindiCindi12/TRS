@@ -41,7 +41,7 @@ namespace TRS.Web.Automation.Tests
         [Category("Hobby Tab")]
         public void AddHobby_ShouldAppearInHobbiesList()
         {
-            var hobbyName = TestDataFactory.UniqueName("Automation Hobby");
+            var hobbyName = TestDataFactory.UniqueName(TestDataFactory.HobbyNames.Default);
 
             var result = _hobbiesPage.SubmitAddHobby(hobbyName, TestDataFactory.HobbyTypes.Sports);
 
@@ -54,10 +54,10 @@ namespace TRS.Web.Automation.Tests
         [Category("Hobby Tab")]
         public void EditHobby_ShouldUpdateNameAndType()
         {
-            var originalName = TestDataFactory.UniqueName("Automation Hobby");
+            var originalName = TestDataFactory.UniqueName(TestDataFactory.HobbyNames.Default);
             _hobbiesPage.SubmitAddHobby(originalName, TestDataFactory.HobbyTypes.Sports);
 
-            var updatedName = TestDataFactory.UniqueName("Automation Hobby Edited");
+            var updatedName = TestDataFactory.UniqueName(TestDataFactory.HobbyNames.DefaultEdited);
             var result = _hobbiesPage.SubmitEditHobby(originalName, updatedName, TestDataFactory.HobbyTypes.Music);
 
             ExtentTest.Info($"Expected: '{updatedName}' should replace '{originalName}' in the hobbies list.");
@@ -70,7 +70,7 @@ namespace TRS.Web.Automation.Tests
         [Category("Hobby Tab")]
         public void DeleteHobby_ShouldRemoveHobbyFromList()
         {
-            var hobbyName = TestDataFactory.UniqueName("Automation Hobby");
+            var hobbyName = TestDataFactory.UniqueName(TestDataFactory.HobbyNames.Default);
             _hobbiesPage.SubmitAddHobby(hobbyName, TestDataFactory.HobbyTypes.Sports);
 
             var result = _hobbiesPage.SubmitDeleteHobby(hobbyName, _settings.BaseUrl, _settings.HobbiesPath);

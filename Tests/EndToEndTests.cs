@@ -34,7 +34,8 @@ namespace TRS.Web.Automation.Tests
 
             // Sign Up
             signUpPage.NavigateTo(_settings.BaseUrl, _settings.SignUpPath);
-            var signUpResult = signUpPage.SubmitSignUp("Trs", "E2E", accountEmail, password, _settings.LoginPath,
+            var signUpResult = signUpPage.SubmitSignUp(
+                TestDataFactory.Names.EndToEndFirstName, TestDataFactory.Names.EndToEndLastName, accountEmail, password, _settings.LoginPath,
                 redirectTimeout: TimeSpan.FromSeconds(15));
 
             // Login
@@ -47,16 +48,17 @@ namespace TRS.Web.Automation.Tests
             // Add Person
             peoplePage.NavigateTo(_settings.BaseUrl, _settings.PeoplePath);
             var linkedPersonEmail = TestDataFactory.UniqueEmail("linked");
-            var addPersonResult = peoplePage.SubmitAddPerson("Automation", "Linked", linkedPersonEmail, password);
+            var addPersonResult = peoplePage.SubmitAddPerson(
+                TestDataFactory.Names.LinkedPersonFirstName, TestDataFactory.Names.LinkedPersonLastName, linkedPersonEmail, password);
 
             // Add Hobby (for the signed-up account itself)
             hobbiesPage.NavigateTo(_settings.BaseUrl, _settings.HobbiesPath);
-            var ownHobbyName = TestDataFactory.UniqueName("E2E Own Hobby");
+            var ownHobbyName = TestDataFactory.UniqueName(TestDataFactory.HobbyNames.EndToEndOwn);
             var addHobbyResult = hobbiesPage.SubmitAddHobby(ownHobbyName, TestDataFactory.HobbyTypes.Sports);
 
             // Link Hobby (a new hobby created for and linked to the person just added)
             peoplePage.NavigateTo(_settings.BaseUrl, _settings.PeoplePath);
-            var linkedHobbyName = TestDataFactory.UniqueName("E2E Linked Hobby");
+            var linkedHobbyName = TestDataFactory.UniqueName(TestDataFactory.HobbyNames.EndToEndLinked);
             peoplePage.SubmitLinkHobby(linkedHobbyName, TestDataFactory.HobbyTypes.Music);
 
             // Verify Dashboard statistics

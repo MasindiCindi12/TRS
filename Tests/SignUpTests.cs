@@ -30,8 +30,8 @@ namespace TRS.Web.Automation.Tests
             ExtentTest.Info($"Generated unique sign-up email: {uniqueEmail}");
 
             var result = _signUpPage.SubmitSignUp(
-                "Trs",
-                "Tester",
+                TestDataFactory.Names.SignUpFirstName,
+                TestDataFactory.Names.SignUpLastName,
                 uniqueEmail,
                 TestDataFactory.DefaultPassword,
                 _settings.LoginPath,
