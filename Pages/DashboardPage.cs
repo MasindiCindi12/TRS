@@ -13,6 +13,21 @@ namespace TRS.Web.Automation.Pages
         {
         }
 
+        public void NavigateTo(string baseUrl, string dashboardPath)
+        {
+            Driver.Navigate().GoToUrl($"{baseUrl.TrimEnd('/')}{dashboardPath}");
+            LogStep($"Navigated to the Dashboard Page ({Driver.Title}).");
+        }
+
+        public DashboardStats GetStats()
+        {
+            var totalUsers = int.Parse(Driver.FindElement(DashboardPageLocators.StatValue("Total Users")).Text);
+            var totalHobbies = int.Parse(Driver.FindElement(DashboardPageLocators.StatValue("Total Hobbies")).Text);
+            var stats = new DashboardStats(totalUsers, totalHobbies);
+            LogStep($"Dashboard stats: {stats.TotalUsers} users, {stats.TotalHobbies} hobbies.");
+            return stats;
+        }
+
         public void OpenUserMenu()
         {
             Driver.FindElement(DashboardPageLocators.UserMenuTrigger).Click();

@@ -1,5 +1,6 @@
 using AventStack.ExtentReports;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using TRS.Web.Automation.Models;
 using TRS.Web.Automation.Objects;
 using TRS.Web.Automation.Utilities;
@@ -57,6 +58,27 @@ namespace TRS.Web.Automation.Pages
                 : $"Edit dialog did not display for {email}.");
 
             return new EditPersonResult(email, dialogDisplayed);
+        }
+
+        public LinkHobbyResult SubmitLinkHobby(string hobbyName, string hobbyType)
+        {
+            Driver.FindElement(PeoplePageLocators.LinkHobbyButton).Click();
+            LogStep("Link Hobby Clicked.");
+
+            WaitHelper.WaitUntilVisible(Driver, PeoplePageLocators.LinkHobbyNameInput, DefaultTimeout).SendKeys(hobbyName);
+
+            Driver.FindElement(PeoplePageLocators.LinkHobbyTypeCombobox).Click();
+            WaitHelper.WaitUntilVisible(Driver, PeoplePageLocators.LinkHobbyTypeOption(hobbyType), DefaultTimeout).Click();
+
+            Driver.FindElement(PeoplePageLocators.LinkHobbyUserCombobox).Click();
+            WaitHelper.WaitUntilVisible(Driver, PeoplePageLocators.LastLinkHobbyUserOption, DefaultTimeout).Click();
+
+            new WebDriverWait(Driver, DefaultTimeout).Until(d => d.FindElements(By.CssSelector("[role='listbox']")).Count == 0);
+
+            Driver.FindElement(PeoplePageLocators.SubmitButton).Click();
+            LogStep($"Hobby linked: {hobbyName} ({hobbyType}) to the most recently added user.");
+
+            return new LinkHobbyResult(hobbyName, hobbyType);
         }
 
         public DeleteUserResult SubmitDeleteUser(string email, string baseUrl, string peoplePath)

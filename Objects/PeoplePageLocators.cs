@@ -5,6 +5,11 @@ namespace TRS.Web.Automation.Objects
     public static class PeoplePageLocators
     {
         public static readonly By AddPersonButton = By.XPath("//button[contains(., 'Add Person')]");
+        public static readonly By LinkHobbyButton = By.XPath("//button[contains(., 'Link Hobby')]");
+        public static readonly By LinkHobbyNameInput = By.CssSelector("[data-cy='input-name']");
+        public static readonly By LinkHobbyTypeCombobox = By.XPath("//label[text()='Hobby Type']/following-sibling::button[@role='combobox']");
+        public static readonly By LinkHobbyUserCombobox = By.XPath("//label[text()='User']/following-sibling::button[@role='combobox']");
+        public static readonly By LastLinkHobbyUserOption = By.XPath("(//div[starts-with(@data-cy,'select-item-user-')])[last()]");
         public static readonly By FirstNameInput = By.CssSelector("[data-cy='input-first-name']");
         public static readonly By LastNameInput = By.CssSelector("[data-cy='input-last-name']");
         public static readonly By EmailInput = By.CssSelector("[data-cy='input-email']");
@@ -23,5 +28,8 @@ namespace TRS.Web.Automation.Objects
 
         public static By CheckboxForEmail(string email) =>
             By.XPath($"//tr[.//td[text()='{email}']]//button[@role='checkbox']");
+
+        public static By LinkHobbyTypeOption(string hobbyType) =>
+            By.CssSelector($"[data-cy='select-item-hobby-{hobbyType}']");
     }
 }
