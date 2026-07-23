@@ -5,6 +5,7 @@ using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using TRS.Web.Automation.Configuration;
+using TRS.Web.Automation.Models;
 using TRS.Web.Automation.Utilities;
 
 namespace TRS.Web.Automation.Tests
@@ -18,6 +19,14 @@ namespace TRS.Web.Automation.Tests
         protected IWebDriver Driver { get; private set; } = null!;
         protected ExtentTest ExtentTest { get; private set; } = null!;
         protected ScreenRecorder Recorder { get; private set; } = null!;
+
+        protected static void AssertCredentialsConfigured(AppSettings settings)
+        {
+            Assert.That(settings.LoginEmail, Is.Not.Empty,
+                "Set LoginEmail in Configuration/appsettings.local.json before running this test.");
+            Assert.That(settings.LoginPassword, Is.Not.Empty,
+                "Set LoginPassword in Configuration/appsettings.local.json before running this test.");
+        }
 
         [SetUp]
         public void SetUpDriver()

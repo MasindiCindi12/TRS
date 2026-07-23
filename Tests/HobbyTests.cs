@@ -2,6 +2,7 @@ using TRS.Web.Automation.Assertions;
 using TRS.Web.Automation.Configuration;
 using TRS.Web.Automation.Models;
 using TRS.Web.Automation.Pages;
+using TRS.Web.Automation.TestData;
 
 namespace TRS.Web.Automation.Tests
 {
@@ -16,10 +17,7 @@ namespace TRS.Web.Automation.Tests
         {
             _settings = AppSettingsProvider.Current;
 
-            Assert.That(_settings.LoginEmail, Is.Not.Empty,
-                "Set LoginEmail in Configuration/appsettings.local.json before running this test.");
-            Assert.That(_settings.LoginPassword, Is.Not.Empty,
-                "Set LoginPassword in Configuration/appsettings.local.json before running this test.");
+            AssertCredentialsConfigured(_settings);
 
             var loginPage = new LoginPage(Driver, ExtentTest, Recorder);
             _hobbiesPage = new HobbiesPage(Driver, ExtentTest, Recorder);
@@ -39,19 +37,13 @@ namespace TRS.Web.Automation.Tests
             _hobbiesPage.NavigateTo(_settings.BaseUrl, _settings.HobbiesPath);
         }
 
-        private static string UniqueHobbyName(string label)
-        {
-            var suffix = Guid.NewGuid().ToString("N")[..3];
-            return $"{label} {suffix}";
-        }
-
         [Test]
         [Category("Hobby Tab")]
         public void AddHobby_ShouldAppearInHobbiesList()
         {
-            var hobbyName = UniqueHobbyName("Automation Hobby");
+            var hobbyName = TestDataFactory.UniqueName("Automation Hobby");
 
-            var result = _hobbiesPage.SubmitAddHobby(hobbyName, "Sports");
+            var result = _hobbiesPage.SubmitAddHobby(hobbyName, TestDataFactory.HobbyTypes.Sports);
 
             ExtentTest.Info($"Expected: '{hobbyName}' should appear in the hobbies list after adding it.");
             ExtentTest.Info($"Actual: Added hobby: {result.HobbyName} ({result.HobbyType}), listed: {result.IsListed}.");
@@ -62,11 +54,11 @@ namespace TRS.Web.Automation.Tests
         [Category("Hobby Tab")]
         public void EditHobby_ShouldUpdateNameAndType()
         {
-            var originalName = UniqueHobbyName("Automation Hobby");
-            _hobbiesPage.SubmitAddHobby(originalName, "Sports");
+            var originalName = TestDataFactory.UniqueName("Automation Hobby");
+            _hobbiesPage.SubmitAddHobby(originalName, TestDataFactory.HobbyTypes.Sports);
 
-            var updatedName = UniqueHobbyName("Automation Hobby Edited");
-            var result = _hobbiesPage.SubmitEditHobby(originalName, updatedName, "Music");
+            var updatedName = TestDataFactory.UniqueName("Automation Hobby Edited");
+            var result = _hobbiesPage.SubmitEditHobby(originalName, updatedName, TestDataFactory.HobbyTypes.Music);
 
             ExtentTest.Info($"Expected: '{updatedName}' should replace '{originalName}' in the hobbies list.");
             ExtentTest.Info($"Actual: Edited hobby: {result.UpdatedName} ({result.UpdatedType}), " +
@@ -78,8 +70,8 @@ namespace TRS.Web.Automation.Tests
         [Category("Hobby Tab")]
         public void DeleteHobby_ShouldRemoveHobbyFromList()
         {
-            var hobbyName = UniqueHobbyName("Automation Hobby");
-            _hobbiesPage.SubmitAddHobby(hobbyName, "Sports");
+            var hobbyName = TestDataFactory.UniqueName("Automation Hobby");
+            _hobbiesPage.SubmitAddHobby(hobbyName, TestDataFactory.HobbyTypes.Sports);
 
             var result = _hobbiesPage.SubmitDeleteHobby(hobbyName, _settings.BaseUrl, _settings.HobbiesPath);
 

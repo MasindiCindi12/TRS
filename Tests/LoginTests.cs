@@ -2,6 +2,7 @@ using TRS.Web.Automation.Assertions;
 using TRS.Web.Automation.Configuration;
 using TRS.Web.Automation.Models;
 using TRS.Web.Automation.Pages;
+using TRS.Web.Automation.TestData;
 
 namespace TRS.Web.Automation.Tests
 {
@@ -28,10 +29,7 @@ namespace TRS.Web.Automation.Tests
         [Category("Login Tests")]
         public async Task Login_WithValidCredentials_ShouldReachDashboard()
         {
-            Assert.That(_settings.LoginEmail, Is.Not.Empty,
-                "Set LoginEmail in Configuration/appsettings.local.json before running this test.");
-            Assert.That(_settings.LoginPassword, Is.Not.Empty,
-                "Set LoginPassword in Configuration/appsettings.local.json before running this test.");
+            AssertCredentialsConfigured(_settings);
 
             var result = await _loginPage.SubmitLoginAsync(
                 _settings.LoginEmail,
@@ -50,8 +48,8 @@ namespace TRS.Web.Automation.Tests
         public async Task Login_WithInvalidCredentials_ShouldBeRejected()
         {
             var result = await _loginPage.SubmitLoginAsync(
-                "invalid.user@example.com",
-                "IncorrectPassword123",
+                TestDataFactory.InvalidEmail,
+                TestDataFactory.InvalidPassword,
                 _settings.DashboardPath,
                 responseTimeout: TimeSpan.FromSeconds(15),
                 redirectTimeout: TimeSpan.FromSeconds(5));
@@ -65,10 +63,7 @@ namespace TRS.Web.Automation.Tests
         [Category("Login Tests")]
         public async Task Logout_WhenClicked_ShouldReturnToSignIn()
         {
-            Assert.That(_settings.LoginEmail, Is.Not.Empty,
-                "Set LoginEmail in Configuration/appsettings.local.json before running this test.");
-            Assert.That(_settings.LoginPassword, Is.Not.Empty,
-                "Set LoginPassword in Configuration/appsettings.local.json before running this test.");
+            AssertCredentialsConfigured(_settings);
 
             var loginResult = await _loginPage.SubmitLoginAsync(
                 _settings.LoginEmail,

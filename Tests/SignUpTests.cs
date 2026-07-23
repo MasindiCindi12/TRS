@@ -2,6 +2,7 @@ using TRS.Web.Automation.Assertions;
 using TRS.Web.Automation.Configuration;
 using TRS.Web.Automation.Models;
 using TRS.Web.Automation.Pages;
+using TRS.Web.Automation.TestData;
 
 namespace TRS.Web.Automation.Tests
 {
@@ -25,15 +26,14 @@ namespace TRS.Web.Automation.Tests
         [Category("Sign Up Tests")]
         public void SignUp_WithNewEmail_ShouldRedirectToSignIn()
         {
-            var sixDigitSuffix = Math.Abs(Guid.NewGuid().GetHashCode() % 1_000_000).ToString("D6");
-            var uniqueEmail = $"trs.test.{sixDigitSuffix}@example.com";
+            var uniqueEmail = TestDataFactory.UniqueEmail("signup");
             ExtentTest.Info($"Generated unique sign-up email: {uniqueEmail}");
 
             var result = _signUpPage.SubmitSignUp(
                 "Trs",
                 "Tester",
                 uniqueEmail,
-                "TestPass123!",
+                TestDataFactory.DefaultPassword,
                 _settings.LoginPath,
                 redirectTimeout: TimeSpan.FromSeconds(15));
 

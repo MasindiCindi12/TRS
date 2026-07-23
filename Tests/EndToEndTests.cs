@@ -2,6 +2,7 @@ using TRS.Web.Automation.Assertions;
 using TRS.Web.Automation.Configuration;
 using TRS.Web.Automation.Models;
 using TRS.Web.Automation.Pages;
+using TRS.Web.Automation.TestData;
 
 namespace TRS.Web.Automation.Tests
 {
@@ -16,18 +17,6 @@ namespace TRS.Web.Automation.Tests
             _settings = AppSettingsProvider.Current;
         }
 
-        private static string UniqueEmail(string label)
-        {
-            var sixDigitSuffix = Math.Abs(Guid.NewGuid().GetHashCode() % 1_000_000).ToString("D6");
-            return $"trs.test.{label}.{sixDigitSuffix}@example.com";
-        }
-
-        private static string UniqueName(string label)
-        {
-            var suffix = Guid.NewGuid().ToString("N")[..3];
-            return $"{label} {suffix}";
-        }
-
         [Test]
         [Category("End To End Tests")]
         public async Task CompleteUserJourney_ShouldSucceedFromSignUpToLogout()
@@ -38,8 +27,8 @@ namespace TRS.Web.Automation.Tests
             var hobbiesPage = new HobbiesPage(Driver, ExtentTest, Recorder);
             var dashboardPage = new DashboardPage(Driver, ExtentTest, Recorder);
 
-            const string password = "TestPass123!";
-            var accountEmail = UniqueEmail("e2e");
+            var password = TestDataFactory.DefaultPassword;
+            var accountEmail = TestDataFactory.UniqueEmail("e2e");
 
             ExtentTest.Info(PreConditionBanner);
 
@@ -57,18 +46,18 @@ namespace TRS.Web.Automation.Tests
 
             // Add Person
             peoplePage.NavigateTo(_settings.BaseUrl, _settings.PeoplePath);
-            var linkedPersonEmail = UniqueEmail("linked");
+            var linkedPersonEmail = TestDataFactory.UniqueEmail("linked");
             var addPersonResult = peoplePage.SubmitAddPerson("Automation", "Linked", linkedPersonEmail, password);
 
             // Add Hobby (for the signed-up account itself)
             hobbiesPage.NavigateTo(_settings.BaseUrl, _settings.HobbiesPath);
-            var ownHobbyName = UniqueName("E2E Own Hobby");
-            var addHobbyResult = hobbiesPage.SubmitAddHobby(ownHobbyName, "Sports");
+            var ownHobbyName = TestDataFactory.UniqueName("E2E Own Hobby");
+            var addHobbyResult = hobbiesPage.SubmitAddHobby(ownHobbyName, TestDataFactory.HobbyTypes.Sports);
 
             // Link Hobby (a new hobby created for and linked to the person just added)
             peoplePage.NavigateTo(_settings.BaseUrl, _settings.PeoplePath);
-            var linkedHobbyName = UniqueName("E2E Linked Hobby");
-            peoplePage.SubmitLinkHobby(linkedHobbyName, "Music");
+            var linkedHobbyName = TestDataFactory.UniqueName("E2E Linked Hobby");
+            peoplePage.SubmitLinkHobby(linkedHobbyName, TestDataFactory.HobbyTypes.Music);
 
             // Verify Dashboard statistics
             dashboardPage.NavigateTo(_settings.BaseUrl, _settings.DashboardPath);
