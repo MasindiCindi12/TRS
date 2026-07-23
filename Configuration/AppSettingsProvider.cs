@@ -34,6 +34,7 @@ namespace TRS.Web.Automation.Configuration
             if (!string.IsNullOrWhiteSpace(loaded.DashboardPath)) settings.DashboardPath = loaded.DashboardPath;
             if (!string.IsNullOrWhiteSpace(loaded.SignUpPath)) settings.SignUpPath = loaded.SignUpPath;
             if (!string.IsNullOrWhiteSpace(loaded.PeoplePath)) settings.PeoplePath = loaded.PeoplePath;
+            if (!string.IsNullOrWhiteSpace(loaded.HobbiesPath)) settings.HobbiesPath = loaded.HobbiesPath;
             if (!string.IsNullOrWhiteSpace(loaded.LoginEmail)) settings.LoginEmail = loaded.LoginEmail;
             if (!string.IsNullOrWhiteSpace(loaded.LoginPassword)) settings.LoginPassword = loaded.LoginPassword;
         }
