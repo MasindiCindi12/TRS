@@ -6,7 +6,7 @@ using TRS.Web.Automation.Pages;
 namespace TRS.Web.Automation.Tests
 {
     [TestFixture]
-    public class DeleteUserTests : BaseTest
+    public class PersonTests : BaseTest
     {
         private PeoplePage _peoplePage = null!;
         private AppSettings _settings = null!;
@@ -39,10 +39,46 @@ namespace TRS.Web.Automation.Tests
             _peoplePage.NavigateTo(_settings.BaseUrl, _settings.PeoplePath);
         }
 
-        [Test]
-        public void DeleteUser_FromPeopleList_RemovesUserFromListAfterReload()
+        private static string UniquePersonEmail()
         {
-            var result = _peoplePage.SubmitDeleteFirstUser(_settings.BaseUrl, _settings.PeoplePath);
+            var sixDigitSuffix = Math.Abs(Guid.NewGuid().GetHashCode() % 1_000_000).ToString("D6");
+            return $"trs.test.{sixDigitSuffix}@example.com";
+        }
+
+        [Test]
+        [Category("People Tab")]
+        public void AddPerson_WithUniqueEmail_AppearsInList()
+        {
+            var email = UniquePersonEmail();
+
+            var result = _peoplePage.SubmitAddPerson("Automation", "Person", email, "TestPass123!");
+
+            ExtentTest.Info($"Added person: {result.Email}, listed: {result.IsListed}");
+            PersonAssertions.AssertPersonAdded(result);
+        }
+
+        [Test]
+        [Category("People Tab")]
+        public void EditPerson_FromPeopleGrid_DisplaysEditDialog()
+        {
+            var email = UniquePersonEmail();
+            _peoplePage.SubmitAddPerson("Automation", "Person", email, "TestPass123!");
+
+            var result = _peoplePage.SubmitEditPerson(email);
+
+            ExtentTest.Info($"Edit clicked for {result.Email}, dialog displayed: {result.EditDialogDisplayed}");
+            PersonAssertions.AssertEditDialogDisplayed(result);
+        }
+
+        [Test]
+        [Category("People Tab")]
+        public void DeleteUser_AfterAdding_RemovesUserFromListAfterReload()
+        {
+            var email = UniquePersonEmail();
+            var addResult = _peoplePage.SubmitAddPerson("Automation", "Person", email, "TestPass123!");
+            PersonAssertions.AssertPersonAdded(addResult);
+
+            var result = _peoplePage.SubmitDeleteUser(email, _settings.BaseUrl, _settings.PeoplePath);
 
             ExtentTest.Info($"Deleted user: {result.DeletedEmail}, still listed after reload: {result.StillListedAfterReload}");
             DeleteUserAssertions.AssertUserWasDeleted(result);

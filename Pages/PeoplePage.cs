@@ -8,6 +8,9 @@ namespace TRS.Web.Automation.Pages
 {
     public class PeoplePage : BasePage
     {
+        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(10);
+        private static readonly TimeSpan EditDialogTimeout = TimeSpan.FromSeconds(5);
+
         public PeoplePage(IWebDriver driver, ExtentTest test, ScreenRecorder recorder) : base(driver, test, recorder)
         {
         }
@@ -18,36 +21,51 @@ namespace TRS.Web.Automation.Pages
             LogStep($"Navigated to the People Page ({Driver.Title}).");
         }
 
-        public string GetFirstRowEmail()
-        {
-            var email = Driver.FindElement(PeoplePageLocators.FirstRowEmailCell).Text;
-            LogStep($"First row user email captured: {email}.");
-            return email;
-        }
-
-        public void SelectFirstRow()
-        {
-            Driver.FindElement(PeoplePageLocators.FirstRowCheckbox).Click();
-            LogStep("First row selected.");
-        }
-
-        public void DeleteSelectedRows()
-        {
-            Driver.FindElement(PeoplePageLocators.DeleteSelectedButton).Click();
-            LogStep("Delete Selected Rows Clicked.");
-        }
-
         public bool IsEmailListed(string email)
         {
             return Driver.FindElement(PeoplePageLocators.TableBody).Text.Contains(email);
         }
 
-        public DeleteUserResult SubmitDeleteFirstUser(string baseUrl, string peoplePath)
+        public AddPersonResult SubmitAddPerson(string firstName, string lastName, string email, string password)
         {
-            var email = GetFirstRowEmail();
+            Driver.FindElement(PeoplePageLocators.AddPersonButton).Click();
+            LogStep("Add Person Clicked.");
 
-            SelectFirstRow();
-            DeleteSelectedRows();
+            WaitHelper.WaitUntilVisible(Driver, PeoplePageLocators.FirstNameInput, DefaultTimeout).SendKeys(firstName);
+            Driver.FindElement(PeoplePageLocators.LastNameInput).SendKeys(lastName);
+            Driver.FindElement(PeoplePageLocators.EmailInput).SendKeys(email);
+            Driver.FindElement(PeoplePageLocators.PasswordInput).SendKeys(password);
+            Driver.FindElement(PeoplePageLocators.ConfirmPasswordInput).SendKeys(password);
+            Driver.FindElement(PeoplePageLocators.SubmitButton).Click();
+            LogStep($"Person submitted: {firstName} {lastName} ({email}).");
+
+            var isListed = WaitHelper.WaitUntilVisible(Driver, PeoplePageLocators.RowByEmail(email), DefaultTimeout) is not null;
+            return new AddPersonResult(email, isListed);
+        }
+
+        public EditPersonResult SubmitEditPerson(string email)
+        {
+            Driver.FindElement(PeoplePageLocators.OpenMenuButtonForEmail(email)).Click();
+            LogStep($"Open Menu Clicked for {email}.");
+
+            WaitHelper.WaitUntilVisible(Driver, PeoplePageLocators.EditMenuItem, DefaultTimeout).Click();
+            LogStep($"Edit Clicked for {email}.");
+
+            var dialogDisplayed = TryWaitUntilVisible(PeoplePageLocators.Dialog, EditDialogTimeout);
+            LogStep(dialogDisplayed
+                ? $"Edit dialog displayed for {email}."
+                : $"Edit dialog did not display for {email}.");
+
+            return new EditPersonResult(email, dialogDisplayed);
+        }
+
+        public DeleteUserResult SubmitDeleteUser(string email, string baseUrl, string peoplePath)
+        {
+            Driver.FindElement(PeoplePageLocators.CheckboxForEmail(email)).Click();
+            LogStep($"Selected row for {email}.");
+
+            Driver.FindElement(PeoplePageLocators.DeleteSelectedButton).Click();
+            LogStep("Delete Selected Rows Clicked.");
 
             NavigateTo(baseUrl, peoplePath);
             var stillListed = IsEmailListed(email);
@@ -56,6 +74,19 @@ namespace TRS.Web.Automation.Pages
                 : $"User {email} is no longer listed after reload.");
 
             return new DeleteUserResult(email, stillListed);
+        }
+
+        private bool TryWaitUntilVisible(By locator, TimeSpan timeout)
+        {
+            try
+            {
+                WaitHelper.WaitUntilVisible(Driver, locator, timeout);
+                return true;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
         }
     }
 }
