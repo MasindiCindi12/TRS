@@ -47,19 +47,20 @@ namespace TRS.Web.Automation.Tests
 
         [Test]
         [Category("Hobby Tab")]
-        public void AddHobby_WithUniqueName_AppearsInList()
+        public void AddHobby_ShouldAppearInHobbiesList()
         {
             var hobbyName = UniqueHobbyName("Automation Hobby");
 
             var result = _hobbiesPage.SubmitAddHobby(hobbyName, "Sports");
 
-            ExtentTest.Info($"Added hobby: {result.HobbyName} ({result.HobbyType}), listed: {result.IsListed}");
+            ExtentTest.Info($"Expected: '{hobbyName}' should appear in the hobbies list after adding it.");
+            ExtentTest.Info($"Actual: Added hobby: {result.HobbyName} ({result.HobbyType}), listed: {result.IsListed}.");
             HobbyAssertions.AssertHobbyAdded(result);
         }
 
         [Test]
         [Category("Hobby Tab")]
-        public void EditHobby_AfterAdding_UpdatesNameAndType()
+        public void EditHobby_ShouldUpdateNameAndType()
         {
             var originalName = UniqueHobbyName("Automation Hobby");
             _hobbiesPage.SubmitAddHobby(originalName, "Sports");
@@ -67,21 +68,23 @@ namespace TRS.Web.Automation.Tests
             var updatedName = UniqueHobbyName("Automation Hobby Edited");
             var result = _hobbiesPage.SubmitEditHobby(originalName, updatedName, "Music");
 
-            ExtentTest.Info($"Edited hobby: {result.UpdatedName} ({result.UpdatedType}), " +
-                             $"updated listed: {result.UpdatedNameIsListed}, original still listed: {result.OriginalNameIsListed}");
+            ExtentTest.Info($"Expected: '{updatedName}' should replace '{originalName}' in the hobbies list.");
+            ExtentTest.Info($"Actual: Edited hobby: {result.UpdatedName} ({result.UpdatedType}), " +
+                             $"updated listed: {result.UpdatedNameIsListed}, original still listed: {result.OriginalNameIsListed}.");
             HobbyAssertions.AssertHobbyEdited(result);
         }
 
         [Test]
         [Category("Hobby Tab")]
-        public void DeleteHobby_AfterAdding_RemovesHobbyFromList()
+        public void DeleteHobby_ShouldRemoveHobbyFromList()
         {
             var hobbyName = UniqueHobbyName("Automation Hobby");
             _hobbiesPage.SubmitAddHobby(hobbyName, "Sports");
 
             var result = _hobbiesPage.SubmitDeleteHobby(hobbyName, _settings.BaseUrl, _settings.HobbiesPath);
 
-            ExtentTest.Info($"Deleted hobby: {result.HobbyName}, still listed after reload: {result.StillListedAfterReload}");
+            ExtentTest.Info($"Expected: '{hobbyName}' should no longer appear in the hobbies list after deleting it and reloading the page.");
+            ExtentTest.Info($"Actual: Deleted hobby: {result.HobbyName}, still listed after reload: {result.StillListedAfterReload}.");
             HobbyAssertions.AssertHobbyDeleted(result);
         }
     }

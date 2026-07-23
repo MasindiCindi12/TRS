@@ -22,7 +22,8 @@ namespace TRS.Web.Automation.Tests
         }
 
         [Test]
-        public void SignUp_WithUniqueRandomEmail_RedirectsToSignIn()
+        [Category("Sign Up Tests")]
+        public void SignUp_WithNewEmail_ShouldRedirectToSignIn()
         {
             var sixDigitSuffix = Math.Abs(Guid.NewGuid().GetHashCode() % 1_000_000).ToString("D6");
             var uniqueEmail = $"trs.test.{sixDigitSuffix}@example.com";
@@ -36,6 +37,8 @@ namespace TRS.Web.Automation.Tests
                 _settings.LoginPath,
                 redirectTimeout: TimeSpan.FromSeconds(15));
 
+            ExtentTest.Info("Expected: Signing up with a new unique email redirects to the Sign In page.");
+            ExtentTest.Info($"Actual: Final URL: {result.FinalUrl}.");
             SignUpAssertions.AssertSignUpSucceeded(result, _settings.LoginPath);
         }
     }

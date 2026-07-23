@@ -26,7 +26,7 @@ namespace TRS.Web.Automation.Tests
 
         [Test]
         [Category("Login Tests")]
-        public async Task Login_WithValidCredentials_ReachesDashboard()
+        public async Task Login_WithValidCredentials_ShouldReachDashboard()
         {
             Assert.That(_settings.LoginEmail, Is.Not.Empty,
                 "Set LoginEmail in Configuration/appsettings.local.json before running this test.");
@@ -40,13 +40,14 @@ namespace TRS.Web.Automation.Tests
                 responseTimeout: TimeSpan.FromSeconds(15),
                 redirectTimeout: TimeSpan.FromSeconds(20));
 
-            ExtentTest.Info($"Network: {result.StatusCode?.ToString() ?? "no response captured"}");
+            ExtentTest.Info("Expected: Login succeeds (200 OK) and redirects to the dashboard.");
+            ExtentTest.Info($"Actual: Network status {result.StatusCode?.ToString() ?? "no response captured"}, final URL: {result.FinalUrl}.");
             LoginAssertions.AssertLoginSucceeded(result, _settings.DashboardPath);
         }
 
         [Test]
         [Category("Login Tests")]
-        public async Task Login_WithInvalidCredentials_ReturnsUnauthorized()
+        public async Task Login_WithInvalidCredentials_ShouldBeRejected()
         {
             var result = await _loginPage.SubmitLoginAsync(
                 "invalid.user@example.com",
@@ -55,17 +56,19 @@ namespace TRS.Web.Automation.Tests
                 responseTimeout: TimeSpan.FromSeconds(15),
                 redirectTimeout: TimeSpan.FromSeconds(5));
 
-            ExtentTest.Info($"Network: {result.StatusCode?.ToString() ?? "no response captured"}");
+            ExtentTest.Info("Expected: Login is rejected (401 Unauthorized) and the user remains on the Sign In page.");
+            ExtentTest.Info($"Actual: Network status {result.StatusCode?.ToString() ?? "no response captured"}, final URL: {result.FinalUrl}.");
             LoginAssertions.AssertLoginFailed(result, _settings.LoginPath);
         }
 
         [Test]
         [Category("Login Tests")]
-        public void LogOut_FromDashboard_ReturnsToSignIn()
+        public void Logout_WhenClicked_ShouldReturnToSignIn()
         {
             var result = _dashboardPage.SubmitLogOut(_settings.LoginPath, redirectTimeout: TimeSpan.FromSeconds(15));
 
-            ExtentTest.Info($"Final URL: {result.FinalUrl}");
+            ExtentTest.Info("Expected: Logging out redirects back to the Sign In page.");
+            ExtentTest.Info($"Actual: Final URL: {result.FinalUrl}.");
             LogoutAssertions.AssertLogoutSucceeded(result, _settings.LoginPath);
         }
     }

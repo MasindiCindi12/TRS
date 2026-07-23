@@ -47,40 +47,46 @@ namespace TRS.Web.Automation.Tests
 
         [Test]
         [Category("People Tab")]
-        public void AddPerson_WithUniqueEmail_AppearsInList()
+        public void AddPerson_ShouldAppearInPeopleList()
         {
             var email = UniquePersonEmail();
 
             var result = _peoplePage.SubmitAddPerson("Automation", "Person", email, "TestPass123!");
 
-            ExtentTest.Info($"Added person: {result.Email}, listed: {result.IsListed}");
+            ExtentTest.Info($"Expected: '{email}' should appear in the People list after adding them.");
+            ExtentTest.Info($"Actual: Added person: {result.Email}, listed: {result.IsListed}.");
             PersonAssertions.AssertPersonAdded(result);
         }
 
         [Test]
         [Category("People Tab")]
-        public void EditPerson_FromPeopleGrid_DisplaysEditDialog()
+        public void EditPerson_WhenClicked_ShouldDisplayEditDialog()
         {
             var email = UniquePersonEmail();
             _peoplePage.SubmitAddPerson("Automation", "Person", email, "TestPass123!");
 
             var result = _peoplePage.SubmitEditPerson(email);
 
-            ExtentTest.Info($"Edit clicked for {result.Email}, dialog displayed: {result.EditDialogDisplayed}");
+            ExtentTest.Info($"Expected: Clicking Edit for '{email}' in the People grid should display an edit dialog.");
+            ExtentTest.Info($"Actual: Edit clicked for {result.Email}, dialog displayed: {result.EditDialogDisplayed}.");
             PersonAssertions.AssertEditDialogDisplayed(result);
         }
 
         [Test]
         [Category("People Tab")]
-        public void DeleteUser_AfterAdding_RemovesUserFromListAfterReload()
+        public void DeletePerson_WhenConfirmed_ShouldNotAppearAfterRefresh()
         {
             var email = UniquePersonEmail();
             var addResult = _peoplePage.SubmitAddPerson("Automation", "Person", email, "TestPass123!");
+
+            ExtentTest.Info($"Expected: '{email}' should appear in the People list after adding them (precondition for delete).");
+            ExtentTest.Info($"Actual: Added person: {addResult.Email}, listed: {addResult.IsListed}.");
             PersonAssertions.AssertPersonAdded(addResult);
 
             var result = _peoplePage.SubmitDeleteUser(email, _settings.BaseUrl, _settings.PeoplePath);
 
-            ExtentTest.Info($"Deleted user: {result.DeletedEmail}, still listed after reload: {result.StillListedAfterReload}");
+            ExtentTest.Info($"Expected: '{email}' should no longer appear in the People list after deleting them and reloading the page.");
+            ExtentTest.Info($"Actual: Deleted user: {result.DeletedEmail}, still listed after reload: {result.StillListedAfterReload}.");
             DeleteUserAssertions.AssertUserWasDeleted(result);
         }
     }
