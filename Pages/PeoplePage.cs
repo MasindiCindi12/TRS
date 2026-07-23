@@ -71,7 +71,9 @@ namespace TRS.Web.Automation.Pages
             WaitHelper.WaitUntilVisible(Driver, PeoplePageLocators.LinkHobbyTypeOption(hobbyType), DefaultTimeout).Click();
 
             Driver.FindElement(PeoplePageLocators.LinkHobbyUserCombobox).Click();
-            WaitHelper.WaitUntilVisible(Driver, PeoplePageLocators.LastLinkHobbyUserOption, DefaultTimeout).Click();
+            var lastUserOption = WaitHelper.WaitUntilVisible(Driver, PeoplePageLocators.LastLinkHobbyUserOption, DefaultTimeout);
+            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", lastUserOption);
+            lastUserOption.Click();
 
             new WebDriverWait(Driver, DefaultTimeout).Until(d => d.FindElements(By.CssSelector("[role='listbox']")).Count == 0);
 

@@ -34,7 +34,7 @@ namespace TRS.Web.Automation.Tests
                 responseTimeout: TimeSpan.FromSeconds(15),
                 redirectTimeout: TimeSpan.FromSeconds(20));
 
-            LoginAssertions.AssertLoginSucceeded(loginResult, _settings.DashboardPath);
+            LoginAssertions.AssertLoginSucceeded(ExtentTest, loginResult, _settings.DashboardPath);
         }
 
        

@@ -26,7 +26,7 @@ namespace TRS.Web.Automation.Tests
         [Category("Sign Up Tests")]
         public void SignUp_WithNewEmail_ShouldRedirectToSignIn()
         {
-            var uniqueEmail = TestDataFactory.UniqueEmail("signup");
+            var uniqueEmail = TestDataFactory.UniqueEmail(TestDataFactory.EmailLabels.SignUp);
             ExtentTest.Info($"Generated unique sign-up email: {uniqueEmail}");
 
             var result = _signUpPage.SubmitSignUp(
@@ -37,9 +37,7 @@ namespace TRS.Web.Automation.Tests
                 _settings.LoginPath,
                 redirectTimeout: TimeSpan.FromSeconds(15));
 
-            ExtentTest.Info("Expected: Signing up with a new unique email redirects to the Sign In page.");
-            ExtentTest.Info($"Actual: Final URL: {result.FinalUrl}.");
-            SignUpAssertions.AssertSignUpSucceeded(result, _settings.LoginPath);
+            SignUpAssertions.AssertSignUpSucceeded(ExtentTest, result, _settings.LoginPath);
         }
     }
 }

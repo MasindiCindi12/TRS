@@ -32,7 +32,7 @@ namespace TRS.Web.Automation.Tests
                 responseTimeout: TimeSpan.FromSeconds(15),
                 redirectTimeout: TimeSpan.FromSeconds(20));
 
-            LoginAssertions.AssertLoginSucceeded(loginResult, _settings.DashboardPath);
+            LoginAssertions.AssertLoginSucceeded(ExtentTest, loginResult, _settings.DashboardPath);
 
             _peoplePage.NavigateTo(_settings.BaseUrl, _settings.PeoplePath);
         }
@@ -41,45 +41,37 @@ namespace TRS.Web.Automation.Tests
         [Category("People Tab")]
         public void AddPerson_ShouldAppearInPeopleList()
         {
-            var email = TestDataFactory.UniqueEmail("person");
+            var email = TestDataFactory.UniqueEmail(TestDataFactory.EmailLabels.Person);
 
             var result = _peoplePage.SubmitAddPerson(TestDataFactory.Names.PersonFirstName, TestDataFactory.Names.PersonLastName, email, TestDataFactory.DefaultPassword);
 
-            ExtentTest.Info($"Expected: '{email}' should appear in the People list after adding them.");
-            ExtentTest.Info($"Actual: Added person: {result.Email}, listed: {result.IsListed}.");
-            PersonAssertions.AssertPersonAdded(result);
+            PersonAssertions.AssertPersonAdded(ExtentTest, result);
         }
 
         [Test]
         [Category("People Tab")]
         public void EditPerson_WhenClicked_ShouldDisplayEditDialog()
         {
-            var email = TestDataFactory.UniqueEmail("person");
+            var email = TestDataFactory.UniqueEmail(TestDataFactory.EmailLabels.Person);
             _peoplePage.SubmitAddPerson(TestDataFactory.Names.PersonFirstName, TestDataFactory.Names.PersonLastName, email, TestDataFactory.DefaultPassword);
 
             var result = _peoplePage.SubmitEditPerson(email);
 
-            ExtentTest.Info($"Expected: Clicking Edit for '{email}' in the People grid should display an edit dialog.");
-            ExtentTest.Info($"Actual: Edit clicked for {result.Email}, dialog displayed: {result.EditDialogDisplayed}.");
-            PersonAssertions.AssertEditDialogDisplayed(result);
+            PersonAssertions.AssertEditDialogDisplayed(ExtentTest, result);
         }
 
         [Test]
         [Category("People Tab")]
         public void DeletePerson_WhenConfirmed_ShouldNotAppearAfterRefresh()
         {
-            var email = TestDataFactory.UniqueEmail("person");
+            var email = TestDataFactory.UniqueEmail(TestDataFactory.EmailLabels.Person);
             var addResult = _peoplePage.SubmitAddPerson(TestDataFactory.Names.PersonFirstName, TestDataFactory.Names.PersonLastName, email, TestDataFactory.DefaultPassword);
 
-            ExtentTest.Info($"Expected: '{email}' should appear in the People list after adding them (precondition for delete).");
-            ExtentTest.Info($"Actual: Added person: {addResult.Email}, listed: {addResult.IsListed}.");
-            PersonAssertions.AssertPersonAdded(addResult);
+            PersonAssertions.AssertPersonAdded(ExtentTest, addResult);
 
             var result = _peoplePage.SubmitDeleteUser(email, _settings.BaseUrl, _settings.PeoplePath);
 
-            ExtentTest.Info($"Expected: '{email}' should no longer appear in the People list after deleting them and reloading the page.");
-            ExtentTest.Info($"Actual: Deleted user: {result.DeletedEmail}, still listed after reload: {result.StillListedAfterReload}.");
-            DeleteUserAssertions.AssertUserWasDeleted(result);
+            DeleteUserAssertions.AssertUserWasDeleted(ExtentTest, result);
         }
     }
 }

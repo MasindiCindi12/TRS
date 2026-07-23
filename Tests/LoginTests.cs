@@ -38,9 +38,7 @@ namespace TRS.Web.Automation.Tests
                 responseTimeout: TimeSpan.FromSeconds(15),
                 redirectTimeout: TimeSpan.FromSeconds(20));
 
-            ExtentTest.Info("Expected: Login succeeds (200 OK) and redirects to the dashboard.");
-            ExtentTest.Info($"Actual: Network status {result.StatusCode?.ToString() ?? "no response captured"}, final URL: {result.FinalUrl}.");
-            LoginAssertions.AssertLoginSucceeded(result, _settings.DashboardPath);
+            LoginAssertions.AssertLoginSucceeded(ExtentTest, result, _settings.DashboardPath);
         }
 
         [Test]
@@ -54,9 +52,7 @@ namespace TRS.Web.Automation.Tests
                 responseTimeout: TimeSpan.FromSeconds(15),
                 redirectTimeout: TimeSpan.FromSeconds(5));
 
-            ExtentTest.Info("Expected: Login is rejected (401 Unauthorized) and the user remains on the Sign In page.");
-            ExtentTest.Info($"Actual: Network status {result.StatusCode?.ToString() ?? "no response captured"}, final URL: {result.FinalUrl}.");
-            LoginAssertions.AssertLoginFailed(result, _settings.LoginPath);
+            LoginAssertions.AssertLoginFailed(ExtentTest, result, _settings.LoginPath);
         }
 
         [Test]
@@ -71,13 +67,11 @@ namespace TRS.Web.Automation.Tests
                 _settings.DashboardPath,
                 responseTimeout: TimeSpan.FromSeconds(15),
                 redirectTimeout: TimeSpan.FromSeconds(20));
-            LoginAssertions.AssertLoginSucceeded(loginResult, _settings.DashboardPath);
+            LoginAssertions.AssertLoginSucceeded(ExtentTest, loginResult, _settings.DashboardPath);
 
             var result = _dashboardPage.SubmitLogOut(_settings.LoginPath, redirectTimeout: TimeSpan.FromSeconds(15));
 
-            ExtentTest.Info("Expected: Logging out redirects back to the Sign In page.");
-            ExtentTest.Info($"Actual: Final URL: {result.FinalUrl}.");
-            LogoutAssertions.AssertLogoutSucceeded(result, _settings.LoginPath);
+            LogoutAssertions.AssertLogoutSucceeded(ExtentTest, result, _settings.LoginPath);
         }
     }
 }

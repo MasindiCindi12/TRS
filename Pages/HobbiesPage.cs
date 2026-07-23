@@ -68,7 +68,7 @@ namespace TRS.Web.Automation.Pages
             var updatedNameIsListed = WaitHelper.WaitUntilVisible(Driver, HobbiesPageLocators.HobbyRow(updatedName), DefaultTimeout) is not null;
             var originalNameIsListed = IsHobbyListed(currentName);
 
-            return new EditHobbyResult(updatedName, updatedType, updatedNameIsListed, originalNameIsListed);
+            return new EditHobbyResult(currentName, updatedName, updatedType, updatedNameIsListed, originalNameIsListed);
         }
 
         public DeleteHobbyResult SubmitDeleteHobby(string hobbyName, string baseUrl, string hobbiesPath)

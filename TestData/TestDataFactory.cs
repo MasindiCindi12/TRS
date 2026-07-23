@@ -35,6 +35,14 @@ namespace TRS.Web.Automation.TestData
             public const string EndToEndLastName = "E2E";
         }
 
+        public static class EmailLabels
+        {
+            public const string Person = "person";
+            public const string SignUp = "signup";
+            public const string EndToEnd = "e2e";
+            public const string LinkedPerson = "linked";
+        }
+
         public static string UniqueEmail(string label)
         {
             var sixDigitSuffix = Math.Abs(Guid.NewGuid().GetHashCode() % 1_000_000).ToString("D6");

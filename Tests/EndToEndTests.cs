@@ -28,7 +28,7 @@ namespace TRS.Web.Automation.Tests
             var dashboardPage = new DashboardPage(Driver, ExtentTest, Recorder);
 
             var password = TestDataFactory.DefaultPassword;
-            var accountEmail = TestDataFactory.UniqueEmail("e2e");
+            var accountEmail = TestDataFactory.UniqueEmail(TestDataFactory.EmailLabels.EndToEnd);
 
             ExtentTest.Info(PreConditionBanner);
 
@@ -47,7 +47,7 @@ namespace TRS.Web.Automation.Tests
 
             // Add Person
             peoplePage.NavigateTo(_settings.BaseUrl, _settings.PeoplePath);
-            var linkedPersonEmail = TestDataFactory.UniqueEmail("linked");
+            var linkedPersonEmail = TestDataFactory.UniqueEmail(TestDataFactory.EmailLabels.LinkedPerson);
             var addPersonResult = peoplePage.SubmitAddPerson(
                 TestDataFactory.Names.LinkedPersonFirstName, TestDataFactory.Names.LinkedPersonLastName, linkedPersonEmail, password);
 
@@ -78,39 +78,18 @@ namespace TRS.Web.Automation.Tests
             hobbiesPage.NavigateTo(_settings.BaseUrl, _settings.HobbiesPath);
             var linkedHobbyIsListed = hobbiesPage.IsHobbyListed(linkedHobbyName);
 
-            ExtentTest.Info("Expected: Sign up redirects to the Sign In page.");
-            ExtentTest.Info($"Actual: Final URL: {signUpResult.FinalUrl}.");
-
-            ExtentTest.Info("Expected: Login succeeds and redirects to the dashboard.");
-            ExtentTest.Info($"Actual: Network status {loginResult.StatusCode?.ToString() ?? "no response captured"}, final URL: {loginResult.FinalUrl}.");
-
-            ExtentTest.Info($"Expected: '{linkedPersonEmail}' should appear in the People list after adding them.");
-            ExtentTest.Info($"Actual: Added person: {addPersonResult.Email}, listed: {addPersonResult.IsListed}.");
-
-            ExtentTest.Info($"Expected: '{ownHobbyName}' should appear in the hobbies list after adding it.");
-            ExtentTest.Info($"Actual: Added hobby: {addHobbyResult.HobbyName} ({addHobbyResult.HobbyType}), listed: {addHobbyResult.IsListed}.");
-
-            ExtentTest.Info("Expected: Dashboard should render well-formed, non-negative statistics.");
-            ExtentTest.Info($"Actual: Total Users: {statsAfter.TotalUsers}, Total Hobbies: {statsAfter.TotalHobbies}.");
-
-            ExtentTest.Info("Expected: Logging out redirects back to the Sign In page.");
-            ExtentTest.Info($"Actual: Final URL: {logoutResult.FinalUrl}.");
-
-            ExtentTest.Info($"Expected: '{linkedPersonEmail}' should be able to log in successfully.");
-            ExtentTest.Info($"Actual: Network status {linkedPersonLoginResult.StatusCode?.ToString() ?? "no response captured"}, final URL: {linkedPersonLoginResult.FinalUrl}.");
-
             ExtentTest.Info($"Expected: '{linkedHobbyName}' should appear on the linked person's own Hobbies list after Link Hobby.");
             ExtentTest.Info($"Actual: Linked hobby listed: {linkedHobbyIsListed}.");
 
             Assert.Multiple(() =>
             {
-                SignUpAssertions.AssertSignUpSucceeded(signUpResult, _settings.LoginPath);
-                LoginAssertions.AssertLoginSucceeded(loginResult, _settings.DashboardPath);
-                PersonAssertions.AssertPersonAdded(addPersonResult);
-                HobbyAssertions.AssertHobbyAdded(addHobbyResult);
-                DashboardAssertions.AssertStatsAreWellFormed(statsAfter);
-                LogoutAssertions.AssertLogoutSucceeded(logoutResult, _settings.LoginPath);
-                LoginAssertions.AssertLoginSucceeded(linkedPersonLoginResult, _settings.DashboardPath);
+                SignUpAssertions.AssertSignUpSucceeded(ExtentTest, signUpResult, _settings.LoginPath);
+                LoginAssertions.AssertLoginSucceeded(ExtentTest, loginResult, _settings.DashboardPath);
+                PersonAssertions.AssertPersonAdded(ExtentTest, addPersonResult);
+                HobbyAssertions.AssertHobbyAdded(ExtentTest, addHobbyResult);
+                DashboardAssertions.AssertStatsAreWellFormed(ExtentTest, statsAfter);
+                LogoutAssertions.AssertLogoutSucceeded(ExtentTest, logoutResult, _settings.LoginPath);
+                LoginAssertions.AssertLoginSucceeded(ExtentTest, linkedPersonLoginResult, _settings.DashboardPath);
                 Assert.That(linkedHobbyIsListed, Is.True,
                     $"Expected '{linkedHobbyName}' to appear on the linked person's own Hobbies list after Link Hobby, " +
                     "but it does not — the hobby was never actually created/linked.");
