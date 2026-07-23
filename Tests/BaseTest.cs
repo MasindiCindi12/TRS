@@ -1,7 +1,10 @@
+using System.Reflection;
+using System.Runtime.InteropServices;
 using AventStack.ExtentReports;
 using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using TRS.Web.Automation.Configuration;
 using TRS.Web.Automation.Utilities;
 
 namespace TRS.Web.Automation.Tests
@@ -26,7 +29,23 @@ namespace TRS.Web.Automation.Tests
             {
                 ExtentTest.AssignCategory(category.ToString());
             }
+            LogSystemInformation();
             Recorder = new ScreenRecorder(Driver);
+        }
+
+        private void LogSystemInformation()
+        {
+            var browserVersion = ((IHasCapabilities)Driver).Capabilities.GetCapability("browserVersion")?.ToString() ?? "Unknown";
+            var seleniumVersion = typeof(IWebDriver).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+                ?? typeof(IWebDriver).Assembly.GetName().Version?.ToString()
+                ?? "Unknown";
+
+            ExtentTest.Info("==================== System Information ====================");
+            ExtentTest.Info($"Browser: Chrome {browserVersion}");
+            ExtentTest.Info($"Selenium: {seleniumVersion}");
+            ExtentTest.Info($".NET: {RuntimeInformation.FrameworkDescription}");
+            ExtentTest.Info($"OS: {RuntimeInformation.OSDescription}");
+            ExtentTest.Info($"Test Environment: {AppSettingsProvider.Current.BaseUrl}");
         }
 
         [TearDown]
