@@ -2,6 +2,7 @@ using AventStack.ExtentReports;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using TRS.Web.Automation.Models;
+using TRS.Web.Automation.Objects;
 using TRS.Web.Automation.Utilities;
 
 namespace TRS.Web.Automation.Pages
@@ -9,10 +10,6 @@ namespace TRS.Web.Automation.Pages
     public class LoginPage : BasePage
     {
         private const string CredentialsCallbackPath = "/api/auth/callback/credentials";
-
-        private static readonly By EmailInput = By.Name("email");
-        private static readonly By PasswordInput = By.Name("password");
-        private static readonly By SubmitButton = By.CssSelector("[data-cy='login-submit']");
 
         public LoginPage(IWebDriver driver, ExtentTest test, ScreenRecorder recorder) : base(driver, test, recorder)
         {
@@ -26,19 +23,19 @@ namespace TRS.Web.Automation.Pages
 
         public void EnterEmail(string email)
         {
-            Driver.FindElement(EmailInput).SendKeys(email);
+            Driver.FindElement(LoginPageLocators.EmailInput).SendKeys(email);
             LogStep("User Email Entered.");
         }
 
         public void EnterPassword(string password)
         {
-            Driver.FindElement(PasswordInput).SendKeys(password);
+            Driver.FindElement(LoginPageLocators.PasswordInput).SendKeys(password);
             LogStep("User Password Entered.");
         }
 
         public void Submit()
         {
-            var button = Driver.FindElement(SubmitButton);
+            var button = Driver.FindElement(LoginPageLocators.SubmitButton);
             var label = string.IsNullOrWhiteSpace(button.Text) ? "Submit" : button.Text;
             button.Click();
             LogStep($"{label} Clicked.");
