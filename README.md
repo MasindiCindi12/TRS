@@ -122,3 +122,9 @@ Example report view:
 ## Note on the Target Environment
 
 `https://trs-web.vercel.app` is a shared, publicly-reachable demo deployment, not an isolated test environment. Other concurrent users/testers can add or remove data at any time. Assertions that check the app's own global aggregate figures (e.g. dashboard totals) are written to tolerate this — see `EndToEndTests`, which smoke-checks the dashboard renders well-formed statistics rather than asserting an exact before/after delta, and instead verifies specific outcomes (e.g. a linked hobby) by checking test-owned data directly.
+
+### Accumulated Test Data
+
+Repeated automation runs (from this suite and other testers) have left the environment with 100+ users and 60+ hobbies. This is permanent for users because Delete on the People grid doesn't actually persist (see BUG-001 below) — there is no way to clean that up from the UI, only from the app's own backend/database. Hobby delete does work, so hobby clutter could be cleaned up through the UI if needed, but the leftover users cannot be removed without direct backend access on the app owner's side.
+
+If you're reviewing this project live, a database reset beforehand would make the walkthrough easier to follow.
