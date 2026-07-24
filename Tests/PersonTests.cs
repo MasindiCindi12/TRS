@@ -38,7 +38,6 @@ namespace TRS.Web.Automation.Tests
 
             _peoplePage.NavigateTo(_settings.BaseUrl, _settings.PeoplePath);
         }
-        [Ignore("Skip")]
         [Test]
         [Category("People Tab")]
         public void AddPerson_ShouldAppearInPeopleList()

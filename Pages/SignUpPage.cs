@@ -1,4 +1,5 @@
 using AventStack.ExtentReports;
+using System.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using TRS.Web.Automation.Models;
@@ -67,6 +68,12 @@ namespace TRS.Web.Automation.Pages
             Submit();
         }
 
+        public string? GetPasswordValidationMessage()
+        {
+            var message = Driver.FindElements(SignUpPageLocators.PasswordValidationMessage).FirstOrDefault();
+            return message?.Text;
+        }
+
         public SignUpResult SubmitSignUp(
             string firstName,
             string lastName,
@@ -76,6 +83,12 @@ namespace TRS.Web.Automation.Pages
             TimeSpan redirectTimeout)
         {
             SignUp(firstName, lastName, email, password);
+
+            var passwordValidationMessage = GetPasswordValidationMessage();
+            if (passwordValidationMessage is not null)
+            {
+                LogStep($"Password validation message shown: \"{passwordValidationMessage}\"");
+            }
 
             try
             {
@@ -87,7 +100,7 @@ namespace TRS.Web.Automation.Pages
                 LogStep("Sign up did not redirect to the Sign In page in time.");
             }
 
-            return new SignUpResult(Driver.Url);
+            return new SignUpResult(Driver.Url, passwordValidationMessage);
         }
     }
 }

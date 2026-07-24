@@ -6,6 +6,20 @@ namespace TRS.Web.Automation.TestData
         public const string InvalidEmail = "invalid.user@example.com";
         public const string InvalidPassword = "IncorrectPassword123";
 
+        public static class Passwords
+        {
+            // Confirmed live against trs-web.vercel.app/auth/register: registration actually requires
+            // length >= 8, a number, and a special character, but does NOT require both letter cases —
+            // despite the on-page message claiming "a combination of lowercase, numbers, and uppercase".
+            public const string MeetsAllRequirements = "Abcdef1!";
+            public const string TooShort = "Ab1cde!";
+            public const string NoUppercase = "abcdefgh1!";
+            public const string NoLowercase = "ABCDEFGH1!";
+            public const string NoSpecialCharacter = "Abcdefgh1";
+            public const string NoNumber = "Abcdefgh!";
+            public const string NoLetterAtAll = "12345678!";
+        }
+
         public static class HobbyTypes
         {
             public const string Sports = "Sports";
