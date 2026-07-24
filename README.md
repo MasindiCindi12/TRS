@@ -5,6 +5,7 @@ Selenium/NUnit UI test automation suite for the [TRS Web](https://trs-web.vercel
 ## Where to Find the Reports
 
 - **QA Assignment report** (test approach, decision tables, test cases, defects/observations): [`TRS QA Assignment — Sekhwari Masindi.docx`](<TRS QA Assignment — Sekhwari Masindi.docx>), at the repo root.
+- **Sample ExtentReports HTML run** (committed for reviewers who don't want to run the suite themselves): [`docs/sample-report/TestReport_20260724_113004.html`](docs/sample-report/TestReport_20260724_113004.html) — includes the step-by-step logs and screen-recording GIFs for every test in that run.
 - **Generated ExtentReports HTML + recordings** (produced locally each time you run `dotnet test`, not committed to the repo): `Reports/yyyy-MM-dd/TestReport_yyyyMMdd_HHmmss.html` — see the [Reports](#reports) section below for details and a screenshot.
 
 ## Tech Stack
