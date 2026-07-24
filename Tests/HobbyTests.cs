@@ -74,5 +74,27 @@ namespace TRS.Web.Automation.Tests
 
             HobbyAssertions.AssertHobbyDeleted(ExtentTest, result);
         }
+
+        [Test]
+        [Category("Hobby Tab")]
+        public void AddHobby_WithBlankFields_ShouldShowValidationMessages()
+        {
+            var result = _hobbiesPage.SubmitAddHobbyBlank();
+
+            HobbyAssertions.AssertBlankFieldValidationMessages(ExtentTest, result);
+        }
+
+        [Test]
+        [Category("Hobby Tab")]
+        public void AddHobby_WithDuplicateName_ShouldBeRejectedOrFlagged()
+        {
+            var hobbyName = TestDataFactory.UniqueName(TestDataFactory.HobbyNames.Default);
+            var firstResult = _hobbiesPage.SubmitAddHobby(hobbyName, TestDataFactory.HobbyTypes.Sports);
+            HobbyAssertions.AssertHobbyAdded(ExtentTest, firstResult);
+
+            var duplicateRowCount = _hobbiesPage.SubmitAddHobbyExpectingDuplicate(hobbyName, TestDataFactory.HobbyTypes.Sports);
+
+            HobbyAssertions.AssertDuplicateNameRejected(ExtentTest, hobbyName, duplicateRowCount);
+        }
     }
 }

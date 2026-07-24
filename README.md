@@ -80,8 +80,9 @@ Tests run **sequentially** (`AssemblySettings.cs` sets `ParallelScope.None`) —
 |---|---|---|
 | `LoginTests` | Login Tests | Valid/invalid login, logout |
 | `SignUpTests` | Sign Up Tests | Sign-up with a unique generated email |
-| `PersonTests` | People Tab | Add / edit / delete a person via the People grid |
-| `HobbyTests` | Hobby Tab | Add / edit / delete a hobby via My Hobbies |
+| `PersonTests` | People Tab | Add / edit / delete a person via the People grid; blank-field validation; duplicate email; name length boundary |
+| `HobbyTests` | Hobby Tab | Add / edit / delete a hobby via My Hobbies; blank-field validation; duplicate hobby name |
+| `DashboardTests` | Dashboard | Hobby Distribution chart reflects a newly added hobby |
 | `EndToEndTests` | End To End Tests | Full journey: Sign Up → Login → Add Person → Add Hobby → Link Hobby → verify Dashboard → Logout → verify the linked hobby |
 
 Unique test data (emails, hobby names) is generated per run using a short GUID-derived suffix, so tests can run repeatedly without colliding with existing data.
@@ -92,6 +93,7 @@ A few tests are written against the **correct expected behavior** and are expect
 
 - **`DeletePerson_WhenConfirmed_ShouldNotAppearAfterRefresh`** — selecting a person and clicking "Delete" on the People grid clears the row selection but never actually deletes the user; the row is still present after a page reload.
 - **`EditPerson_WhenClicked_ShouldDisplayEditDialog`** — the "Edit" menu item on a People-grid row is a dead link (empty `href`); no edit dialog ever opens.
+- **`AddHobby_WithDuplicateName_ShouldBeRejectedOrFlagged`** — Add Hobby silently allows creating a second hobby with an identical name (no error, no rejection); since Edit/Delete are matched by name text, duplicates make those actions ambiguous.
 
 Do not "fix" these tests to pass without first confirming the underlying app behavior has actually been corrected.
 

@@ -1,4 +1,5 @@
 using AventStack.ExtentReports;
+using System.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using TRS.Web.Automation.Models;
@@ -26,6 +27,14 @@ namespace TRS.Web.Automation.Pages
             var stats = new DashboardStats(totalUsers, totalHobbies);
             LogStep($"Dashboard stats: {stats.TotalUsers} users, {stats.TotalHobbies} hobbies.");
             return stats;
+        }
+
+        public int GetHobbyDistributionCount(string hobbyType)
+        {
+            var element = Driver.FindElements(DashboardPageLocators.HobbyDistributionCount(hobbyType)).FirstOrDefault();
+            var count = element is null ? 0 : int.Parse(element.Text);
+            LogStep($"Hobby Distribution count for {hobbyType}: {count}.");
+            return count;
         }
 
         public void OpenUserMenu()

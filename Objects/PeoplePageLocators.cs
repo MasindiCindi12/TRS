@@ -17,6 +17,11 @@ namespace TRS.Web.Automation.Objects
         public static readonly By ConfirmPasswordInput = By.CssSelector("[data-cy='input-password-confirm']");
         public static readonly By SubmitButton = By.CssSelector("[data-cy='submit-button']");
         public static readonly By Dialog = By.CssSelector("[role='dialog']");
+        public static readonly By FirstNameValidationMessage = By.CssSelector("[data-cy='input-first-name'] + p");
+        public static readonly By LastNameValidationMessage = By.CssSelector("[data-cy='input-last-name'] + p");
+        public static readonly By EmailValidationMessage = By.CssSelector("[data-cy='input-email'] + p");
+        public static readonly By PasswordValidationMessage = By.CssSelector("[data-cy='input-password'] + p");
+        public static readonly By ConfirmPasswordValidationMessage = By.CssSelector("[data-cy='input-password-confirm'] + p");
         public static readonly By EditMenuItem = By.XPath("//a[@role='menuitem'][text()='Edit']");
         public static readonly By DeleteSelectedButton = By.CssSelector("button[aria-label='Delete selected rows']");
         public static readonly By TableBody = By.CssSelector("table tbody");

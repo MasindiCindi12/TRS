@@ -1,4 +1,5 @@
 using AventStack.ExtentReports;
+using System.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using TRS.Web.Automation.Models;
@@ -40,8 +41,55 @@ namespace TRS.Web.Automation.Pages
             Driver.FindElement(PeoplePageLocators.SubmitButton).Click();
             LogStep($"Person submitted: {firstName} {lastName} ({email}).");
 
-            var isListed = WaitHelper.WaitUntilVisible(Driver, PeoplePageLocators.RowByEmail(email), DefaultTimeout) is not null;
+            var isListed = TryWaitUntilVisible(PeoplePageLocators.RowByEmail(email), DefaultTimeout);
             return new AddPersonResult(email, isListed);
+        }
+
+        public AddPersonValidationResult SubmitAddPersonBlank()
+        {
+            Driver.FindElement(PeoplePageLocators.AddPersonButton).Click();
+            LogStep("Add Person Clicked.");
+
+            WaitHelper.WaitUntilVisible(Driver, PeoplePageLocators.Dialog, DefaultTimeout);
+            Driver.FindElement(PeoplePageLocators.SubmitButton).Click();
+            LogStep("Submit Clicked with all fields left blank.");
+
+            string? Message(By locator) => Driver.FindElements(locator).FirstOrDefault()?.Text;
+
+            var result = new AddPersonValidationResult(
+                Message(PeoplePageLocators.FirstNameValidationMessage),
+                Message(PeoplePageLocators.LastNameValidationMessage),
+                Message(PeoplePageLocators.EmailValidationMessage),
+                Message(PeoplePageLocators.PasswordValidationMessage),
+                Message(PeoplePageLocators.ConfirmPasswordValidationMessage));
+
+            LogStep($"Validation messages — First Name: \"{result.FirstNameMessage ?? "none"}\", " +
+                    $"Last Name: \"{result.LastNameMessage ?? "none"}\", Email: \"{result.EmailMessage ?? "none"}\", " +
+                    $"Password: \"{result.PasswordMessage ?? "none"}\", Password Confirm: \"{result.PasswordConfirmMessage ?? "none"}\".");
+
+            return result;
+        }
+
+        public DuplicateEmailResult SubmitAddPersonWithDuplicateEmail(string firstName, string lastName, string existingEmail, string password)
+        {
+            var countBefore = Driver.FindElements(PeoplePageLocators.RowByEmail(existingEmail)).Count;
+
+            Driver.FindElement(PeoplePageLocators.AddPersonButton).Click();
+            LogStep("Add Person Clicked.");
+
+            WaitHelper.WaitUntilVisible(Driver, PeoplePageLocators.FirstNameInput, DefaultTimeout).SendKeys(firstName);
+            Driver.FindElement(PeoplePageLocators.LastNameInput).SendKeys(lastName);
+            Driver.FindElement(PeoplePageLocators.EmailInput).SendKeys(existingEmail);
+            Driver.FindElement(PeoplePageLocators.PasswordInput).SendKeys(password);
+            Driver.FindElement(PeoplePageLocators.ConfirmPasswordInput).SendKeys(password);
+            Driver.FindElement(PeoplePageLocators.SubmitButton).Click();
+            LogStep($"Submitted a second person using the already-registered email {existingEmail}.");
+
+            var dialogClosed = TryWaitUntilInvisible(PeoplePageLocators.Dialog, DefaultTimeout);
+            var countAfter = Driver.FindElements(PeoplePageLocators.RowByEmail(existingEmail)).Count;
+            LogStep($"Rows matching {existingEmail}: {countBefore} before, {countAfter} after the duplicate submission.");
+
+            return new DuplicateEmailResult(existingEmail, countBefore, countAfter, dialogClosed);
         }
 
         public EditPersonResult SubmitEditPerson(string email)
@@ -105,6 +153,19 @@ namespace TRS.Web.Automation.Pages
             try
             {
                 WaitHelper.WaitUntilVisible(Driver, locator, timeout);
+                return true;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
+        }
+
+        private bool TryWaitUntilInvisible(By locator, TimeSpan timeout)
+        {
+            try
+            {
+                new WebDriverWait(Driver, timeout).Until(d => d.FindElements(locator).Count == 0);
                 return true;
             }
             catch (WebDriverTimeoutException)

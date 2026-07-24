@@ -18,5 +18,16 @@ namespace TRS.Web.Automation.Assertions
             Assert.That(stats.TotalUsers, Is.GreaterThan(0), "Expected Total Users to be a positive number.");
             Assert.That(stats.TotalHobbies, Is.GreaterThanOrEqualTo(0), "Expected Total Hobbies to be a non-negative number.");
         }
+
+        // Same shared-environment caveat as above: other concurrent users could also add hobbies of this
+        // type between the two reads, so we only assert the count moved by at least the one we added.
+        public static void AssertHobbyDistributionCountIncreased(ExtentTest test, string hobbyType, int countBefore, int countAfter)
+        {
+            test.Info($"Expected: The Hobby Distribution chart's '{hobbyType}' count should increase by at least 1 after adding a new '{hobbyType}' hobby.");
+            test.Info($"Actual: '{hobbyType}' count was {countBefore} before, {countAfter} after.");
+
+            Assert.That(countAfter, Is.GreaterThanOrEqualTo(countBefore + 1),
+                $"Expected the '{hobbyType}' segment count to increase by at least 1 (from {countBefore}), but it was {countAfter}.");
+        }
     }
 }

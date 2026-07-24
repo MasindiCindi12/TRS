@@ -1,4 +1,5 @@
 using AventStack.ExtentReports;
+using System.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using TRS.Web.Automation.Models;
@@ -24,6 +25,32 @@ namespace TRS.Web.Automation.Pages
         public bool IsHobbyListed(string hobbyName)
         {
             return Driver.FindElements(HobbiesPageLocators.HobbyRow(hobbyName)).Count > 0;
+        }
+
+        public int CountHobbyRows(string hobbyName)
+        {
+            return Driver.FindElements(HobbiesPageLocators.HobbyRow(hobbyName)).Count;
+        }
+
+        public HobbyValidationResult SubmitAddHobbyBlank()
+        {
+            Driver.FindElement(HobbiesPageLocators.AddHobbyButton).Click();
+            LogStep("Add Hoby Clicked.");
+
+            WaitHelper.WaitUntilVisible(Driver, HobbiesPageLocators.NameInput, DefaultTimeout);
+            Driver.FindElement(HobbiesPageLocators.SubmitButton).Click();
+            LogStep("Submit Clicked with all fields left blank.");
+
+            string? Message(By locator) => Driver.FindElements(locator).FirstOrDefault()?.Text;
+
+            var result = new HobbyValidationResult(
+                Message(HobbiesPageLocators.NameValidationMessage),
+                Message(HobbiesPageLocators.HobbyTypeValidationMessage));
+
+            LogStep($"Validation messages — Name: \"{result.NameMessage ?? "none"}\", " +
+                    $"Hobby Type: \"{result.HobbyTypeMessage ?? "none"}\".");
+
+            return result;
         }
 
         private void FillHobbyForm(string hobbyName, string hobbyType, string? prefilledName = null)
@@ -55,6 +82,29 @@ namespace TRS.Web.Automation.Pages
 
             var isListed = WaitHelper.WaitUntilVisible(Driver, HobbiesPageLocators.HobbyRow(hobbyName), DefaultTimeout) is not null;
             return new AddHobbyResult(hobbyName, hobbyType, isListed);
+        }
+
+        public int SubmitAddHobbyExpectingDuplicate(string hobbyName, string hobbyType)
+        {
+            Driver.FindElement(HobbiesPageLocators.AddHobbyButton).Click();
+            LogStep("Add Hoby Clicked.");
+
+            FillHobbyForm(hobbyName, hobbyType);
+            LogStep($"Hobby resubmitted with the same name: {hobbyName} ({hobbyType}).");
+
+            try
+            {
+                new WebDriverWait(Driver, DefaultTimeout).Until(_ => CountHobbyRows(hobbyName) >= 2);
+            }
+            catch (WebDriverTimeoutException)
+            {
+                // Timed out waiting for a second row — the duplicate was rejected (or is still pending),
+                // so fall through and report whatever count is actually present below.
+            }
+
+            var finalCount = CountHobbyRows(hobbyName);
+            LogStep($"Rows named '{hobbyName}' after the duplicate submission: {finalCount}.");
+            return finalCount;
         }
 
         public EditHobbyResult SubmitEditHobby(string currentName, string updatedName, string updatedType)
