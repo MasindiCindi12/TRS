@@ -2,6 +2,11 @@
 
 Selenium/NUnit UI test automation suite for the [TRS Web](https://trs-web.vercel.app) demo application, covering authentication, people management, hobby management, and a full end-to-end user journey. Test runs produce a rich HTML report (via ExtentReports) with step-by-step logs, screen recordings, and screenshots on failure.
 
+## Where to Find the Reports
+
+- **QA Assignment report** (test approach, decision tables, test cases, defects/observations): [`TRS QA Assignment — Sekhwari Masindi.docx`](<TRS QA Assignment — Sekhwari Masindi.docx>), at the repo root.
+- **Generated ExtentReports HTML + recordings** (produced locally each time you run `dotnet test`, not committed to the repo): `Reports/yyyy-MM-dd/TestReport_yyyyMMdd_HHmmss.html` — see the [Reports](#reports) section below for details and a screenshot.
+
 ## Tech Stack
 
 - **.NET 8** / C#
@@ -98,6 +103,8 @@ Reports/yyyy-MM-dd/TestReport_yyyyMMdd_HHmmss.html
 Reports/yyyy-MM-dd/Recordings/<TestName>_<timestamp>.gif
 ```
 
+This `Reports/` folder is git-ignored and only appears locally after you run `dotnet test` — open the newest `.html` file in a browser to view the results of your run.
+
 Every test logs, in order:
 1. A **System Information** block (browser, Selenium, .NET, OS, target environment) — helps reproduce environment-specific issues.
 2. Step-by-step actions as they happen (navigation, form input, clicks).
@@ -105,6 +112,10 @@ Every test logs, in order:
 4. A screen-recording GIF of the whole test, and a screenshot on failure.
 
 NUnit `[Category]` attributes are also assigned to the Extent test, so the report's category view lines up with `dotnet test --filter Category=...`.
+
+Example report view:
+
+![ExtentReports example — test detail view showing status, timing, category tag, a recording thumbnail, and the System Information log](docs/images/extent-report-example.png)
 
 ## Note on the Target Environment
 
