@@ -35,6 +35,8 @@ namespace TRS.Web.Automation.Tests
                 redirectTimeout: TimeSpan.FromSeconds(20));
 
             LoginAssertions.AssertLoginSucceeded(ExtentTest, loginResult, _settings.DashboardPath);
+
+            ExtentTest.Info(EndPreConditionBanner);
         }
 
        

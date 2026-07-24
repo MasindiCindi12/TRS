@@ -34,6 +34,8 @@ namespace TRS.Web.Automation.Tests
 
             LoginAssertions.AssertLoginSucceeded(ExtentTest, loginResult, _settings.DashboardPath);
 
+            ExtentTest.Info(EndPreConditionBanner);
+
             _hobbiesPage.NavigateTo(_settings.BaseUrl, _settings.HobbiesPath);
         }
 

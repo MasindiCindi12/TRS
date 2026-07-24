@@ -16,6 +16,9 @@ namespace TRS.Web.Automation.Tests
         protected const string PreConditionBanner =
             "====================================Pre-Condition====================================";
 
+        protected const string EndPreConditionBanner =
+            "==================================End Pre-Condition==================================";
+
         protected IWebDriver Driver { get; private set; } = null!;
         protected ExtentTest ExtentTest { get; private set; } = null!;
         protected ScreenRecorder Recorder { get; private set; } = null!;
